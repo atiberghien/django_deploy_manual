@@ -18,14 +18,14 @@
 
    * (en «web») 
        * ajouter à la fin de .bashrc : 
-           * `export VIRTUALENVWRAPPER\_PYTHON=/usr/bin/python3`
+           * `export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3`
            * `source /usr/local/bin/virtualenvwrapper.sh`
        * `source .bashrc`
 
 ## Installation de l'applicatif
 
-    $git clone <url\_du\_repository> <nom\_du\_projet>
-    $mkvirtualenv <nom\_du\_projet> -a <nom\_du\_projet>
+    $git clone <url_du_repository> <nom_du_projet>
+    $mkvirtualenv <nom_du_projet> -a <nom_du_projet>
     $pip3 install -r requirements.txt
     $pip3 install uwsgi
 
@@ -38,22 +38,22 @@ Dans settings.py
 
     DEBUG = False
 
-Dans le extra\_settings.py:
+Dans le extra_settings.py:
 
-    ALLOWED\_HOST = ["XXX.XXX.XXX.XXX","nom\_de\_domaine.tld"]
+    ALLOWED_HOST = ["XXX.XXX.XXX.XXX","nom_de_domaine.tld"]
 
 Synchro de media depuis le PC de dev:
 
-    scp -r media web@<IP\_DU\_SERVEUR>:/home/web/<nom\_du\_projet>
+    scp -r media web@<IP_DU_SERVEUR>:/home/web/<nom_du_projet>
 
-### Création de <nom\_du\_projet>.ini pour la conf supervisor/uwsgi
+### Création de <nom_du_projet>.ini pour la conf supervisor/uwsgi
 
     [uwsgi]
-    chdir = /home/web/<nom\_du\_projet>/
-    socket = /home/web/<nom\_du\_projet>/<nom\_du\_projet>.sock
-    wsgi-file = /home/web/<nom\_du\_projet>/<app\_de\_coordination>/wsgi.py
+    chdir = /home/web/<nom_du_projet>/
+    socket = /home/web/<nom_du_projet>/<nom_du_projet>.sock
+    wsgi-file = /home/web/<nom_du_projet>/<app_de_coordination>/wsgi.py
     processes = 4
-    virtualenv = /home/web/.virtualenvs/<nom\_du\_projet>/
+    virtualenv = /home/web/.virtualenvs/<nom_du_projet>/
     master = true
     uid = web
     gid = www-data
@@ -65,58 +65,58 @@ Synchro de media depuis le PC de dev:
 
 ### Création de la conf nginx
 
-    upstream django-<nom\_du\_projet> {
-        server unix:///home/web/<nom\_du\_projet>/<nom\_du\_projet>.sock;
+    upstream django-<nom_du_projet> {
+        server unix:///home/web/<nom_du_projet>/<nom_du_projet>.sock;
     }
 
     server {
-        server\_name <nom\_de\_domaine>;
+        server_name <nom_de_domaine>;
         charset     utf-8;
 
-        access\_log /home/web/<nom\_du\_projet>/nginx.access.log;
-        error\_log  /home/web/<nom\_du\_projet>/nginx.error.log;
+        access_log /home/web/<nom_du_projet>/nginx.access.log;
+        error_log  /home/web/<nom_du_projet>/nginx.error.log;
 
 
-        client\_max\_body\_size 75M;
+        client_max_body_size 75M;
         sendfile        on;
-        keepalive\_timeout  0;
-        proxy\_buffering on;
-        proxy\_buffer\_size 8k;
-        proxy\_buffers 2048 8k;
+        keepalive_timeout  0;
+        proxy_buffering on;
+        proxy_buffer_size 8k;
+        proxy_buffers 2048 8k;
 
 
         location /media  {
-            alias /home/web/<nom\_du\_projet>/media;
+            alias /home/web/<nom_du_projet>/media;
         }
 
         location /static {
-            alias /home/web/<nom\_du\_projet>/static;
+            alias /home/web/<nom_du_projet>/static;
         }
 
         location / {
-            uwsgi\_pass  django-<nom\_du\_projet>;
-            include     /etc/nginx/uwsgi\_params;
+            uwsgi_pass  django-<nom_du_projet>;
+            include     /etc/nginx/uwsgi_params;
         }
     }
 
-### Conf supervisor : <nom\_du\_projet>.conf
+### Conf supervisor : <nom_du_projet>.conf
 
-    [program:<nom\_du\_projet>]
+    [program:<nom_du_projet>]
     user = web
-    command=/home/web/.virtualenvs/<nom\_du\_projet>/bin/uwsgi /home/web/<nom\_du\_projet>/<nom\_du\_projet>.ini
+    command=/home/web/.virtualenvs/<nom_du_projet>/bin/uwsgi /home/web/<nom_du_projet>/<nom_du_projet>.ini
     autostart=true
     autorestart=true
-    stderr\_logfile = /home/web/<nom\_du\_projet>/uwsgi-err.log
-    stdout\_logfile = /home/web/<nom\_du\_projet>/uwsgi-out.log
+    stderr_logfile = /home/web/<nom_du_projet>/uwsgi-err.log
+    stdout_logfile = /home/web/<nom_du_projet>/uwsgi-out.log
     stopsignal=INT
 
 ### Activation des configs (en «root»)
 
 Dans /etc/nginx/sites-enabled:
 
-    ln -s /home/web/<nom\_du\_projet>/<nom\_de\_domaine.tld>Dans /etc/supervisor/conf.d/
+    ln -s /home/web/<nom_du_projet>/<nom_de_domaine.tld>Dans /etc/supervisor/conf.d/
 
-    ln -s /home/web/<nom\_du\_projet>/<nom\_du\_projet>.conf
+    ln -s /home/web/<nom_du_projet>/<nom_du_projet>.conf
 
 ###  Redémarrage des services
     service nginx restart
