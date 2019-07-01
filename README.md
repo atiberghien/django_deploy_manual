@@ -21,11 +21,10 @@ $apt-get install python3-pip
 $pip install virtualenvwrapper
 ```
 
-* (en «web») 
-* ajouter à la fin de .bashrc : 
-* `export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3`
-* `source /usr/local/bin/virtualenvwrapper.sh`
-* `source .bashrc`
+* (en «web») ajouter à la fin de .bashrc : 
+    * `export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3`
+    * `source /usr/local/bin/virtualenvwrapper.sh`
+    * `source .bashrc`
 
 ## Installation de l'applicatif
 ```
